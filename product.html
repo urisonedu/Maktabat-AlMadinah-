@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنتج | مكتبة المدينة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="container" style="margin-top: 40px;">
+        <div id="product-detail" class="grid" style="grid-template-columns: 1fr 1fr; gap: 50px;">
+            </div>
+    </main>
+
+    <script src="js/data.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id'));
+        const product = products.find(p => p.id === productId);
+
+        if (product) {
+            document.title = `${product.title_ar} | مكتبة المدينة`;
+            const container = document.getElementById('product-detail');
+            container.innerHTML = `
+                <div class="product-large-image">
+                    <img src="${product.image}" style="width: 100%; border-radius: 10px;">
+                </div>
+                <div class="product-info">
+                    <span style="color: var(--primary-color)">${product.category}</span>
+                    <h1 style="font-size: 2.5rem; margin: 10px 0;">${product.title_ar}</h1>
+                    <p style="font-size: 1.2rem; color: #555;">المؤلف: ${product.author_ar}</p>
+                    <div class="product-price" style="font-size: 2rem; margin: 20px 0;">${product.price_dzd} دج</div>
+                    
+                    <div style="background: #fdfdfd; padding: 20px; border: 1px dashed #ccc; margin-bottom: 20px;">
+                        <p>✅ متوفر في المخزن</p>
+                        <p>🚚 التوصيل لـ 58 ولاية (الدفع عند الاستلام)</p>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button onclick="orderWhatsApp()" class="btn btn-whatsapp" style="flex: 1; justify-content: center; padding: 15px;">
+                            اطلب عبر واتساب
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <h3>وصف الكتاب</h3>
+                        <p style="color: #666; margin-top: 10px;">هذا الكتاب يعد من أهم المراجع في باب ${product.category}. يتميز بجودة الورق والطباعة الواضحة.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function orderWhatsApp() {
+            const customerName = "زائر"; // يمكن إضافة حقل مدخلات لاحقاً
+            const wilaya = "غير محددة";
+            const address = "غير محدد";
+            
+            const message = `السلام عليكم، أريد طلب: ${product.title_ar} — السعر: ${product.price_dzd} دج. الاسم: ${customerName}، الولاية: ${wilaya}، العنوان: ${address}.`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/213674737001?text=${encodedMessage}`, '_blank');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المتجر | مكتبة المدينة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-flex">
+            <a href="index.html" class="logo">🕌 مكتبة المدينة</a>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="ابحث عن كتاب، مؤلف..." onkeyup="filterProducts()">
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div style="display: flex; gap: 30px; margin-top: 40px;">
+            <aside style="width: 250px; flex-shrink: 0;">
+                <h3>الأصناف</h3>
+                <ul id="categoryList" style="margin-top: 15px;">
+                    <li style="padding: 5px 0; cursor: pointer; color: var(--primary-color);" onclick="filterCategory('all')">الكل</li>
+                    </ul>
+            </aside>
+
+            <section style="flex-grow: 1;">
+                <div id="shop-grid" class="grid"></div>
+            </section>
+        </div>
+    </main>
+
+    <script src="js/data.js"></script>
+    <script>
+        let activeCategory = 'all';
+
+        function renderShop(filterData = products) {
+            const grid = document.getElementById('shop-grid');
+            grid.innerHTML = filterData.map(p => `
+                <div class="product-card">
+                    <a href="product.html?id=${p.id}">
+                        <div class="product-image"><img src="${p.image}" alt="${p.title_ar}"></div>
+                        <div class="product-title">${p.title_ar}</div>
+                        <div class="product-author">${p.author_ar}</div>
+                        <div class="product-price">${p.price_dzd} دج</div>
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function filterCategory(cat) {
+            activeCategory = cat;
+            if(cat === 'all') renderShop(products);
+            else renderShop(products.filter(p => p.category === cat));
+        }
+
+        function filterProducts() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => 
+                p.title_ar.includes(term) || p.author_ar.includes(term)
+            );
+            renderShop(filtered);
+        }
+
+        // تحضير قائمة الأصناف
+        const categories = [...new Set(products.map(p => p.category))];
+        document.getElementById('categoryList').innerHTML += categories.map(c => `
+            <li style="padding: 5px 0; cursor: pointer;" onclick="filterCategory('${c}')">${c}</li>
+        `).join('');
+
+        renderShop();
+    </script>
+</body>
+</html>
